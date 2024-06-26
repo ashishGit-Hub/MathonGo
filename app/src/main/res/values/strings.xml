@@ -14,4 +14,21 @@
     <string name="popular_recipes">Popular Recipes</string>
     <string name="shahi_paneer">Shahi Paneer</string>
     <string name="ready_in_25_min">Ready in 25 min</string>
+    <string name="loading">Loading…</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="all_recipes">All recipes</string>
+    <string name="favourite_recipes">Favourite recipes</string>
+    <string name="_25_min">25 min</string>
+    <string name="ready_in">Ready in</string>
+    <string name="servings">Servings</string>
+    <string name="_6">6</string>
+    <string name="price_serving">Price/serving</string>
+    <string name="_156">156</string>
+    <string name="instructions">Instructions</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="ingredient_image">Ingredient Image</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet consectetur. Sagittis facilisis aliquet aenean lorem ullamcorper et. Risus lectus id sed fermentum in. At porta sed ut lorem volutpat elementum mi sollicitudin. Laoreet tempor nullam velit dui amet mauris sed ac sem.</string>
+    <string name="equipments">Equipments</string>
+    <string name="quick_summary">Quick Summary</string>
+
 </resources>

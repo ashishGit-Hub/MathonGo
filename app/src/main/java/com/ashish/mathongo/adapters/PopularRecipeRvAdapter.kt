@@ -7,26 +7,23 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ashish.mathongo.data.models.Recipe
-import com.ashish.mathongo.databinding.RecipeRvItemBinding
+import com.ashish.mathongo.databinding.PopularRecipeRvItemBinding
 
-class RecipeRvAdapter(private val itemClick : (Int)-> Unit) : ListAdapter<Recipe, RecipeRvAdapter.RecipeViewHolder>(DiffUtil()) {
+class PopularRecipeRvAdapter() : ListAdapter<Recipe, PopularRecipeRvAdapter.RecipeViewHolder>(DiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
-        val view = RecipeRvItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val view = PopularRecipeRvItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return RecipeViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe = getItem(position)
-        recipe?.let {rec->
-            holder.bindItem(rec)
-        }
-        holder.binding.root.setOnClickListener {
-            itemClick(recipe.id)
+        recipe?.let {
+            holder.bindItem(it)
         }
     }
 
-    class RecipeViewHolder(val binding : RecipeRvItemBinding) : RecyclerView.ViewHolder(binding.root){
+    class RecipeViewHolder(private val binding : PopularRecipeRvItemBinding) : RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bindItem(item : Recipe){
             binding.recipeImg.load(item.image)

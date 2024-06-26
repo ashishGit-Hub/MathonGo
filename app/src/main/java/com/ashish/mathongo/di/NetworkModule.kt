@@ -1,6 +1,8 @@
 package com.ashish.mathongo.di
 
 import com.ashish.mathongo.Constants.BASE_URL
+import com.ashish.mathongo.data.api.RecipesAPI
+import com.ashish.mathongo.data.interceptor.AuthMiddleware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,20 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
     }
+
+
+    // middleware Provider
+    @Singleton
+    @Provides
+    fun provideOkHttpAuth(auth: AuthMiddleware): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(auth)
+            .build()
+    }
+    @Singleton
+    @Provides
+    fun providesRecipesAPI(retrofit: Retrofit.Builder, okHttpClient: OkHttpClient): RecipesAPI {
+        return retrofit.client(okHttpClient).build().create(RecipesAPI::class.java)
+    }
+
 
 }

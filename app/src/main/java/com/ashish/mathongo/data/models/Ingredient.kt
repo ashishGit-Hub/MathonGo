@@ -1,6 +1,10 @@
 package com.ashish.mathongo.data.models
 
-data class ExtendedIngredient(
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Ingredient(
     val aisle: String,
     val amount: Double,
     val consitency: String,
@@ -12,4 +16,4 @@ data class ExtendedIngredient(
     val original: String,
     val originalName: String,
     val unit: String
-)
+) : Parcelable

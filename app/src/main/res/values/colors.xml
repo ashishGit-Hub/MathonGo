@@ -10,5 +10,10 @@
     <color name="gray_1">#F2F7FD</color>
     <color name="gray_6">#606F89</color>
     <color name="gray_9">#282833</color>
-    <color name="gray_10">#171B21</color>
+
+    <!-- Primary Gray     -->
+    <color name="primary_gray_1">#FFFFFF</color>
+    <color name="primary_gray_2">#E7F0F8</color>
+    <color name="primary_gray_6">#606F89</color>
+    <color name="primary_gray_10">#171B21</color>
 </resources>
