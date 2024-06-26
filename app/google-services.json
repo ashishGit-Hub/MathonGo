@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1005408726708",
+    "project_id": "mathongo-cdc76",
+    "storage_bucket": "mathongo-cdc76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005408726708:android:72f9be1708730f771a31e1",
+        "android_client_info": {
+          "package_name": "com.ashish.mathongo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSqFCS8u3KcITED8dZiLbynS7UiG8mCzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

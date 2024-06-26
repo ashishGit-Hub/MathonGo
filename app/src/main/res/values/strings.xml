@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MathOnGo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="continue_with_google">Continue with google</string>
+    <string name="please_signing_to_continue">Please signing to continue</string>
+    <string name="welcome_to_reciipiie">Welcome to <b>Rec</b>ii<b>p</b>iie</string>
+    <string name="gmail_login">Gmail Login</string>
+    <string name="home">Home</string>
+    <string name="favourite">Favourite</string>
+    <string name="hey_ashish">👋 Hey Ashish</string>
+    <string name="discover_tasty_and_healthy_receipt">Discover tasty and healthy receipt</string>
+    <string name="search_any_recipe">Search any recipe</string>
+    <string name="popular_recipes">Popular Recipes</string>
+    <string name="shahi_paneer">Shahi Paneer</string>
+    <string name="ready_in_25_min">Ready in 25 min</string>
+</resources>
