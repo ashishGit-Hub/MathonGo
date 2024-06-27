@@ -3,6 +3,7 @@ package com.ashish.mathongo.data.repo
 import com.ashish.mathongo.data.api.RecipesAPI
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.RecipeApiResp
+import com.ashish.mathongo.data.models.SearchResp
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -17,6 +18,9 @@ class RecipeRepo @Inject constructor(
 
     suspend fun getRecipeInfo(recipeId : Int,query: Map<String,String>): Response<Recipe> {
         return recipesAPI.getRecipeInfo(recipeId,query)
+    }
+    suspend fun searchRecipes(query: Map<String,String>): Response<SearchResp> {
+        return recipesAPI.searchRecipes(query)
     }
 
 

@@ -85,6 +85,12 @@ class AllRecipesFragment : Fragment() {
                 }
             }
         }
+
+        // Click Listener
+        binding.searchView.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+
     }
 
     override fun onDestroyView() {

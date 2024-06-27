@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.RecipeApiResp
+import com.ashish.mathongo.data.models.SearchResp
 import com.ashish.mathongo.data.repo.RecipeRepo
 import com.ashish.mathongo.utils.NetworkManager
 import com.ashish.mathongo.utils.NetworkResult
@@ -63,5 +64,25 @@ class RecipeViewModel @Inject constructor(
             }
         }
     }
+   private val _searchRecipesMutableLiveData = MutableLiveData<NetworkResult<SearchResp>>()
 
+    val searchRecipeLiveData: LiveData<NetworkResult<SearchResp>> get() = _searchRecipesMutableLiveData
+
+    fun searchRecipes(query: Map<String, String>) {
+        if (networkManager.internetConnected) {
+            _searchRecipesMutableLiveData.postValue(NetworkResult.Loading())
+            viewModelScope.launch {
+                try {
+                    val response = recipeRepo.searchRecipes(query)
+                    if (response.isSuccessful && response.body() != null){
+                        _searchRecipesMutableLiveData.postValue(NetworkResult.Success(response.body()!!))
+                    }else{
+                        _searchRecipesMutableLiveData.postValue(NetworkResult.Error("Something went wrong! Please try again"))
+                    }
+                }catch (e : Exception){
+                    _searchRecipesMutableLiveData.postValue(NetworkResult.Error(e.localizedMessage))
+                }
+            }
+        }
+    }
 }

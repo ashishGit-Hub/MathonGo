@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_homeFragment_to_recipeDetailsFragment"
             app:destination="@id/recipeDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipeDetailsFragment"
@@ -33,4 +36,23 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.ashish.mathongo.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_searchedRecipeDetailsFragment"
+            app:destination="@id/searchedRecipeDetailsFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/searchedRecipeDetailsFragment"
+        android:name="com.ashish.mathongo.fragments.SearchedRecipeDetailsFragment"
+        android:label="fragment_searched_recipe_details"
+        tools:layout="@layout/fragment_searched_recipe_details" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </dialog>
 </navigation>

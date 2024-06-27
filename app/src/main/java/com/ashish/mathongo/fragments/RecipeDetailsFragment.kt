@@ -70,7 +70,7 @@ class RecipeDetailsFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recipesEquipmentsRv.setHasFixedSize(false)
         binding.recipesEquipmentsRv.adapter = equipmentsRvAdapter
-        
+
         return binding.root
     }
 
@@ -109,7 +109,7 @@ class RecipeDetailsFragment : Fragment() {
                             }
                         }
 
-                        equipmentsRvAdapter.submitList(equipment)
+                        equipmentsRvAdapter.submitList(equipment.distinct())
 
                     }
                 }

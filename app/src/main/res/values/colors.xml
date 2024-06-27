@@ -14,6 +14,7 @@
     <!-- Primary Gray     -->
     <color name="primary_gray_1">#FFFFFF</color>
     <color name="primary_gray_2">#E7F0F8</color>
+    <color name="primary_gray_3">#E1E8EF</color>
     <color name="primary_gray_6">#606F89</color>
     <color name="primary_gray_10">#171B21</color>
 </resources>

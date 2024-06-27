@@ -30,5 +30,11 @@
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet consectetur. Sagittis facilisis aliquet aenean lorem ullamcorper et. Risus lectus id sed fermentum in. At porta sed ut lorem volutpat elementum mi sollicitudin. Laoreet tempor nullam velit dui amet mauris sed ac sem.</string>
     <string name="equipments">Equipments</string>
     <string name="quick_summary">Quick Summary</string>
+    <string name="back">Back</string>
+    <string name="get_ingredients">Get Ingredients</string>
+    <string name="get_full_recipe">Get full recipe</string>
+    <string name="hide_ingredient">Hide Ingredient</string>
+    <string name="get_similar_recipe">Get similar recipe</string>
+    <string name="full_recipe">Full recipe</string>
 
 </resources>
