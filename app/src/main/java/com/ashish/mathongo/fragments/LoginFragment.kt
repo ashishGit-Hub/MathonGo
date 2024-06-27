@@ -32,31 +32,31 @@ import kotlinx.coroutines.tasks.await
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
-    private lateinit var auth : FirebaseAuth
-    private var onTapClient : SignInClient? = null
-    private lateinit var signInRequest : BeginSignInRequest
+    private lateinit var auth: FirebaseAuth
+    private var onTapClient: SignInClient? = null
+    private lateinit var signInRequest: BeginSignInRequest
 
-    private var _binding : FragmentLoginBinding? = null
+    private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
-        Log.d(TAG,auth.currentUser?.displayName.toString())
+        Log.d(TAG, auth.currentUser?.displayName.toString())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater,container,false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
         onTapClient = Identity.getSignInClient(requireContext())
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        if(auth.currentUser != null){
+        if (auth.currentUser != null) {
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         }
     }
@@ -72,7 +72,8 @@ class LoginFragment : Fragment() {
                     .setServerClientId(getString(R.string.default_web_client_id))
                     // Only show accounts previously used to sign in.
                     .setFilterByAuthorizedAccounts(false)
-                    .build())
+                    .build()
+            )
             .build()
 
         binding.loginBtn.setOnClickListener {
@@ -82,21 +83,21 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private suspend fun signingGoogle(){
+    private suspend fun signingGoogle() {
         try {
             val result = onTapClient?.beginSignIn(signInRequest)?.await()
             val intentSenderRequest = IntentSenderRequest.Builder(result!!.pendingIntent).build()
             activityResultLauncher.launch(intentSenderRequest)
-        }catch (e : Error){
+        } catch (e: Error) {
             toast("Something went wrong! Please try after some time")
         }
     }
 
-    private val activityResultLauncher : ActivityResultLauncher<IntentSenderRequest> =
+    private val activityResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()
-        ){
-            if(it.resultCode == RESULT_OK){
+        ) {
+            if (it.resultCode == RESULT_OK) {
                 try {
                     val credential = onTapClient?.getSignInCredentialFromIntent(it.data)
                     val idToken = credential?.googleIdToken
@@ -113,6 +114,7 @@ class LoginFragment : Fragment() {
                                     }
                                 }
                         }
+
                         else -> {
                             toast("Something went wrong! Please try again")
                         }

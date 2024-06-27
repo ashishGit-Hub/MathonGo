@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ashish.mathongo.adapters.FavouriteRecipeRvAdapter
-import com.ashish.mathongo.adapters.SimilarRecipeRvAdapter
 import com.ashish.mathongo.data.viewmodels.RecipeViewModel
 import com.ashish.mathongo.databinding.FragmentFavouriteRecipesBinding
 import dagger.hilt.android.AndroidEntryPoint

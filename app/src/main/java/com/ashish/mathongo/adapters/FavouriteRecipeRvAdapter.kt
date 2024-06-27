@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ashish.mathongo.data.localdb.RecipeEntity
-import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.databinding.RecipeRvItemBinding
 
 class FavouriteRecipeRvAdapter(private val itemClick: (Int) -> Unit) :
