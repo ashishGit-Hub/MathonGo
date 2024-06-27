@@ -12,12 +12,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.ashish.mathongo.Constants
 import com.ashish.mathongo.Constants.TAG
 import com.ashish.mathongo.R
 import com.ashish.mathongo.adapters.EquipmentRvAdapter
 import com.ashish.mathongo.adapters.IngredientRvAdapterGrid
 import com.ashish.mathongo.adapters.SimilarRecipeRvAdapter
+import com.ashish.mathongo.data.localdb.RecipeEntity
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.analyzedinstructions.Equipment
 import com.ashish.mathongo.data.viewmodels.RecipeViewModel
@@ -34,43 +34,55 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
 
-    lateinit var recipe : Recipe
+    lateinit var recipe: Recipe
 
     private val args by navArgs<SearchedRecipeDetailsFragmentArgs>()
 
-    private var _binding : FragmentSearchedRecipeDetailsBinding? = null
+    private var _binding: FragmentSearchedRecipeDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private var isFavourite : Boolean = false
+    private var isFavourite: Boolean = false
 
     private val viewModel by viewModels<RecipeViewModel>()
 
     @Inject
-    lateinit var loadingDialog : LoadingDialog
+    lateinit var loadingDialog: LoadingDialog
 
-    private lateinit var ingredientsRvAdapter : IngredientRvAdapterGrid
+    private lateinit var ingredientsRvAdapter: IngredientRvAdapterGrid
 
     private lateinit var equipmentsRvAdapter: EquipmentRvAdapter
-    private lateinit var similarRecipesRvAdapter : SimilarRecipeRvAdapter
+    private lateinit var similarRecipesRvAdapter: SimilarRecipeRvAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ingredientsRvAdapter = IngredientRvAdapterGrid()
-        viewModel.getRecipeInfo(args.recipeId,
+        viewModel.getRecipeInfo(
+            args.recipeId,
             mapOf(
-            "includeNutrition" to "true",
-            "addWinePairing" to "false",
-            "addTasteData" to "false"
-        ))
+                "includeNutrition" to "true",
+                "addWinePairing" to "false",
+                "addTasteData" to "false"
+            )
+        )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchedRecipeDetailsBinding.inflate(inflater,container,false)
+        _binding = FragmentSearchedRecipeDetailsBinding.inflate(inflater, container, false)
         equipmentsRvAdapter = EquipmentRvAdapter()
-        similarRecipesRvAdapter = SimilarRecipeRvAdapter {  }
+        similarRecipesRvAdapter = SimilarRecipeRvAdapter { }
+
+        viewModel.isFavoriteRecipe(args.recipeId).observe(viewLifecycleOwner){
+            isFavourite = it
+            if(isFavourite){
+                binding.favouriteBtn.setImageResource(R.drawable.heart_filled)
+            }else{
+
+                binding.favouriteBtn.setImageResource(R.drawable.heart)
+            }
+        }
 
         return binding.root
     }
@@ -81,7 +93,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
 
 
         // Set Recycler View Setting
-        binding.recipesIngredientsRv.layoutManager = GridLayoutManager(requireContext(),3)
+        binding.recipesIngredientsRv.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.recipesIngredientsRv.setHasFixedSize(false)
         binding.recipesIngredientsRv.adapter = ingredientsRvAdapter
 
@@ -96,15 +108,33 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
         binding.recipesRv.adapter = similarRecipesRvAdapter
 
 
-
         // All Click Listeners
         binding.favouriteBtn.setOnClickListener {
-            if(isFavourite){
-                binding.favouriteBtn.setImageResource(R.drawable.heart_filled)
-            }else{
-                binding.favouriteBtn.setImageResource(R.drawable.heart)
+            if (this::recipe.isInitialized) {
+                if (isFavourite) {
+                    viewModel.deleteFavouriteRecipe(
+                        RecipeEntity(
+                            id = recipe.id,
+                            title = recipe.title,
+                            image = recipe.image,
+                            readyInMinutes = recipe.readyInMinutes
+                        )
+                    )
+                    binding.favouriteBtn.setImageResource(R.drawable.heart)
+                } else {
+                    viewModel.insertFavouriteRecipe(
+                        RecipeEntity(
+                            id = recipe.id,
+                            title = recipe.title,
+                            image = recipe.image,
+                            readyInMinutes = recipe.readyInMinutes
+                        )
+                    )
+
+                    binding.favouriteBtn.setImageResource(R.drawable.heart_filled)
+                }
+                isFavourite = !isFavourite
             }
-            isFavourite = !isFavourite
         }
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
@@ -114,7 +144,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
             binding.recipeDetailsLayout.gone()
             binding.ingredientLayout.visible()
             binding.ingredientBody.visible()
-            if (this::recipe.isInitialized){
+            if (this::recipe.isInitialized) {
                 ingredientsRvAdapter.submitList(recipe.extendedIngredients)
             }
 
@@ -148,11 +178,11 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
                 instruction.steps.forEach { step ->
                     if (step.equipment.isNotEmpty()) {
                         equipment.addAll(step.equipment)
-                        Log.d(TAG,step.equipment.toString())
+                        Log.d(TAG, step.equipment.toString())
                     }
                 }
             }
-            Log.d(TAG,equipment.toString())
+            Log.d(TAG, equipment.toString())
             equipmentsRvAdapter.submitList(equipment.distinct())
         }
 
@@ -169,10 +199,12 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
 
         binding.getSimilarRecipeBtn.setOnClickListener {
 
-            viewModel.getSimilarRecipe(args.recipeId,mapOf(
-                "number" to "10",
-                "limitLicense" to "true"
-            ))
+            viewModel.getSimilarRecipe(
+                args.recipeId, mapOf(
+                    "number" to "10",
+                    "limitLicense" to "true"
+                )
+            )
             binding.fullRecipeBody.gone()
             binding.getSimilarRecipeBtn.gone()
             binding.similarTopLayout.visible()
@@ -193,7 +225,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
             when (it) {
                 is NetworkResult.Error -> {
                     toast(it.message)
-                    Log.d(Constants.TAG, it.message.toString())
+                    Log.d(TAG, it.message.toString())
                 }
 
                 is NetworkResult.Loading -> loadingDialog.startLoading()
@@ -202,7 +234,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
                         this.recipe = recipe
                         binding.recipeImg.load(recipe.image)
                         binding.recipeTitleTxt.text = recipe.title
-                        recipe.readyInMinutes.let { binding.preparationTimeTxt.text = "$it min" }
+                        recipe.readyInMinutes.let { binding.preparationTimeTxt.text = "${recipe.readyInMinutes} min" }
                         recipe.servings.let { binding.servingsTxt.text = "${recipe.servings}" }
                         recipe.pricePerServing.let {
                             binding.pricePerServingTxt.text = "${recipe.pricePerServing}"
@@ -211,20 +243,21 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
                 }
             }
         }
-        
-        viewModel.similarRecipeLiveData.observe(viewLifecycleOwner){
+
+        viewModel.similarRecipeLiveData.observe(viewLifecycleOwner) {
             loadingDialog.dismiss()
-            when(it){
+            when (it) {
                 is NetworkResult.Error -> {
                     toast(it.message)
                     binding.msgTxt.visible()
                 }
+
                 is NetworkResult.Loading -> loadingDialog.startLoading()
-                is NetworkResult.Success ->{
+                is NetworkResult.Success -> {
                     similarRecipesRvAdapter.submitList(it.data)
-                    if(it.data?.size==0){
+                    if (it.data?.size == 0) {
                         binding.msgTxt.visible()
-                    }else{
+                    } else {
                         binding.msgTxt.gone()
                     }
                 }

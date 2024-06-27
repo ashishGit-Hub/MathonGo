@@ -43,7 +43,6 @@ class SearchFragment : Fragment() {
         return binding.root
     }
     private fun searchedItemClick(recipeId: Int) {
-        toast(recipeId.toString())
         val action = SearchFragmentDirections.actionSearchFragmentToSearchedRecipeDetailsFragment(recipeId)
         findNavController().navigate(action)
     }

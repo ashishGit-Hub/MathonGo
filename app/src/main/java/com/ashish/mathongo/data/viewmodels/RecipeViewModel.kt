@@ -3,7 +3,9 @@ package com.ashish.mathongo.data.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.ashish.mathongo.data.localdb.RecipeEntity
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.RecipeApiResp
 import com.ashish.mathongo.data.models.SearchResp
@@ -110,4 +112,25 @@ class RecipeViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun insertFavouriteRecipe(recipe: RecipeEntity) {
+        viewModelScope.launch {
+        recipeRepo.insertFavouriteRecipe(recipe)
+        }
+    }
+
+    val getFavouriteRecipe : LiveData<List<RecipeEntity>> = recipeRepo.getFavouriteRecipe
+
+    fun deleteFavouriteRecipe(recipe: RecipeEntity) {
+        viewModelScope.launch {
+            recipeRepo.deleteFavouriteRecipe(recipe)
+        }
+    }
+
+    fun isFavoriteRecipe(recipeId: Int): LiveData<Boolean> = liveData {
+        emit(recipeRepo.isFavoriteRecipe(recipeId))
+    }
+
+
 }

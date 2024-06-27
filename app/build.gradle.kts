@@ -23,6 +23,7 @@ android {
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -40,6 +41,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -53,6 +55,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth)
+    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,6 +80,16 @@ dependencies {
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.play.services.auth)
+
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+
+
 
 
 

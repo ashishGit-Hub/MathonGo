@@ -13,8 +13,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.ashish.mathongo.Constants.TAG
+import com.ashish.mathongo.R
 import com.ashish.mathongo.adapters.EquipmentRvAdapter
 import com.ashish.mathongo.adapters.IngredientRvAdapter
+import com.ashish.mathongo.data.localdb.RecipeEntity
+import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.analyzedinstructions.Equipment
 import com.ashish.mathongo.data.viewmodels.RecipeViewModel
 import com.ashish.mathongo.databinding.FragmentRecipeDetailsBinding
@@ -40,6 +43,9 @@ class RecipeDetailsFragment : Fragment() {
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
+    private var isFavourite : Boolean = false
+    private var recipe : Recipe? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getRecipeInfo(
@@ -57,6 +63,16 @@ class RecipeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeDetailsBinding.inflate(inflater, container, false)
+
+        viewModel.isFavoriteRecipe(navArgs.recipeId).observe(viewLifecycleOwner){
+            isFavourite = it
+            if(isFavourite){
+                binding.favouriteBtn.setImageResource(R.drawable.heart_filled)
+            }else{
+
+                binding.favouriteBtn.setImageResource(R.drawable.heart)
+            }
+        }
 
         ingredientRvAdapter = IngredientRvAdapter()
         equipmentsRvAdapter = EquipmentRvAdapter()
@@ -78,6 +94,24 @@ class RecipeDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding.favouriteBtn.setOnClickListener {
+            if (recipe != null){
+                if(isFavourite){
+                    viewModel.deleteFavouriteRecipe(RecipeEntity(id = recipe!!.id, title = recipe!!.title, image = recipe!!.image, readyInMinutes = recipe!!.readyInMinutes))
+                    binding.favouriteBtn.setImageResource(R.drawable.heart)
+                }else{
+                    viewModel.insertFavouriteRecipe(RecipeEntity(id = recipe!!.id, title = recipe!!.title, image = recipe!!.image, readyInMinutes = recipe!!.readyInMinutes))
+
+                    binding.favouriteBtn.setImageResource(R.drawable.heart_filled)
+                }
+                isFavourite = !isFavourite
+            }else{
+                toast("Something went wrong")
+            }
+        }
+
+
         viewModel.recipeInfoLiveData.observe(viewLifecycleOwner) {
             loadingDialog.dismiss()
             when (it) {
@@ -89,6 +123,7 @@ class RecipeDetailsFragment : Fragment() {
                 is NetworkResult.Loading -> loadingDialog.startLoading()
                 is NetworkResult.Success -> {
                     it.data?.let { recipe ->
+                        this.recipe = recipe
                         binding.recipeImg.load(recipe.image)
                         binding.recipeTitleTxt.text = recipe.title
                         recipe.readyInMinutes.let { binding.preparationTimeTxt.text = "$it min" }

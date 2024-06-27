@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,6 +38,13 @@ class LoginFragment : Fragment() {
 
     private var _binding : FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        auth = Firebase.auth
+        Log.d(TAG,auth.currentUser?.displayName.toString())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,8 +56,6 @@ class LoginFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        auth = Firebase.auth
-        Log.d(TAG,auth.currentUser?.displayName.toString())
         if(auth.currentUser != null){
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         }
@@ -79,9 +83,13 @@ class LoginFragment : Fragment() {
     }
 
     private suspend fun signingGoogle(){
-        val result = onTapClient?.beginSignIn(signInRequest)?.await()
-        val intentSenderRequest = IntentSenderRequest.Builder(result!!.pendingIntent).build()
-        activityResultLauncher.launch(intentSenderRequest)
+        try {
+            val result = onTapClient?.beginSignIn(signInRequest)?.await()
+            val intentSenderRequest = IntentSenderRequest.Builder(result!!.pendingIntent).build()
+            activityResultLauncher.launch(intentSenderRequest)
+        }catch (e : Error){
+            toast("Something went wrong! Please try after some time")
+        }
     }
 
     private val activityResultLauncher : ActivityResultLauncher<IntentSenderRequest> =
@@ -98,13 +106,9 @@ class LoginFragment : Fragment() {
                             auth.signInWithCredential(firebaseCredential)
                                 .addOnCompleteListener(requireActivity()) { task ->
                                     if (task.isSuccessful) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "signInWithCredential:success")
-                                        val user = auth.currentUser
                                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
 
                                     } else {
-                                        // If sign in fails, display a message to the user.
                                         Log.w(TAG, "signInWithCredential:failure", task.exception)
                                     }
                                 }

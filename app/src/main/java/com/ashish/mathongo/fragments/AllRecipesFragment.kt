@@ -42,16 +42,12 @@ class AllRecipesFragment : Fragment() {
     lateinit var loadingDialog: LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         viewModel.getRandomRecipes(mapOf(
-            "number" to "10",
+            "number" to "20",
             "limitLicense" to "true",
             "includeNutrition" to "false"
         ))
-    }
-
-    override fun onStart() {
-        super.onStart()
-        auth = Firebase.auth
     }
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -62,6 +58,13 @@ class AllRecipesFragment : Fragment() {
         popularRecipesRvAdapter = PopularRecipeRvAdapter()
 
         recipesRvAdapter = RecipeRvAdapter(::recipeItemClick)
+
+        auth.currentUser?.displayName?.let {username ->
+            binding.username.text = getString(R.string.hey)+" "+username.split(" ").first()
+
+        }
+
+        Log.d(TAG,auth.currentUser?.displayName.toString())
 
 
         return binding.root
@@ -92,7 +95,7 @@ class AllRecipesFragment : Fragment() {
                 }
                 is NetworkResult.Loading -> loadingDialog.startLoading()
                 is NetworkResult.Success -> {
-                    popularRecipesRvAdapter.submitList(it.data?.recipes)
+                    popularRecipesRvAdapter.submitList(it.data?.recipes?.subList(0,5))
                     recipesRvAdapter.submitList(it.data?.recipes)
                 }
             }
