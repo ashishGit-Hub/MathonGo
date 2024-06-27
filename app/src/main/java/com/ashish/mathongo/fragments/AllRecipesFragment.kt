@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -57,7 +58,7 @@ class AllRecipesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAllRecipesBinding.inflate(inflater, container, false)
-        popularRecipesRvAdapter = PopularRecipeRvAdapter()
+        popularRecipesRvAdapter = PopularRecipeRvAdapter(::recipeItemClick)
 
         recipesRvAdapter = RecipeRvAdapter(::recipeItemClick)
 
@@ -65,10 +66,6 @@ class AllRecipesFragment : Fragment() {
             binding.username.text = getString(R.string.hey) + " " + username.split(" ").first()
 
         }
-
-        Log.d(TAG, auth.currentUser?.displayName.toString())
-
-
         return binding.root
     }
 
@@ -104,6 +101,25 @@ class AllRecipesFragment : Fragment() {
                     recipesRvAdapter.submitList(it.data?.recipes)
                 }
             }
+        }
+
+        binding.logout.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Logout")
+            builder.setMessage("Are you sure you want to log out?")
+
+            builder.setPositiveButton("Yes") { dialog, _ ->
+                auth.signOut()
+                dialog.dismiss()
+                findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+            }
+
+            builder.setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
         // Click Listener

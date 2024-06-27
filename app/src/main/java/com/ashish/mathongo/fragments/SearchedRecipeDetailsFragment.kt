@@ -158,6 +158,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
         binding.ingredientCollapsedImg.setOnClickListener {
             binding.recipeDetailsLayout.visible()
             binding.ingredientLayout.gone()
+            binding.ingredientBody.gone()
             binding.fullRecipeTopLayout.gone()
             binding.fullRecipeBody.gone()
             binding.getSimilarRecipeBtn.gone()
