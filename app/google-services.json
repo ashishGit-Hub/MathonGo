@@ -12,7 +12,20 @@
           "package_name": "com.ashish.mathongo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1005408726708-ipacg44ssh9qbdipt6udlf5o7pr2asqj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ashish.mathongo",
+            "certificate_hash": "8bfaee1dc111f8a7baecf2851cd525d49c87db72"
+          }
+        },
+        {
+          "client_id": "1005408726708-t2fjnsnrkmn7p20irsit8esg01i4uned.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCSqFCS8u3KcITED8dZiLbynS7UiG8mCzI"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005408726708-t2fjnsnrkmn7p20irsit8esg01i4uned.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

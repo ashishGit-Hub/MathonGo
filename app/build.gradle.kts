@@ -76,5 +76,8 @@ dependencies {
     // Pagination Library
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.play.services.auth)
+
+
 
 }

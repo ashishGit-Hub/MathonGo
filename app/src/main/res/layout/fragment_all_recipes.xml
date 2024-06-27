@@ -14,10 +14,11 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/hey_ashish"
+            android:text="@string/hey"
             android:textSize="16sp"
             android:textColor="@color/gray_9"
             app:layout_constraintStart_toStartOf="parent"

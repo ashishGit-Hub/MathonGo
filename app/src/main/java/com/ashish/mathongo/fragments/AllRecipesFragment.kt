@@ -1,5 +1,6 @@
 package com.ashish.mathongo.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +20,9 @@ import com.ashish.mathongo.databinding.FragmentAllRecipesBinding
 import com.ashish.mathongo.utils.Extensions.toast
 import com.ashish.mathongo.utils.LoadingDialog
 import com.ashish.mathongo.utils.NetworkResult
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +36,8 @@ class AllRecipesFragment : Fragment() {
     private lateinit var popularRecipesRvAdapter : PopularRecipeRvAdapter
     private lateinit var recipesRvAdapter : RecipeRvAdapter
 
+    private lateinit var auth : FirebaseAuth
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +49,11 @@ class AllRecipesFragment : Fragment() {
         ))
     }
 
+    override fun onStart() {
+        super.onStart()
+        auth = Firebase.auth
+    }
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,6 +62,7 @@ class AllRecipesFragment : Fragment() {
         popularRecipesRvAdapter = PopularRecipeRvAdapter()
 
         recipesRvAdapter = RecipeRvAdapter(::recipeItemClick)
+
 
         return binding.root
     }

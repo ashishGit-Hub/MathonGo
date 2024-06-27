@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.RecipeApiResp
 import com.ashish.mathongo.data.models.SearchResp
+import com.ashish.mathongo.data.models.SimilarRecipe
 import com.ashish.mathongo.data.repo.RecipeRepo
 import com.ashish.mathongo.utils.NetworkManager
 import com.ashish.mathongo.utils.NetworkResult
@@ -81,6 +82,30 @@ class RecipeViewModel @Inject constructor(
                     }
                 }catch (e : Exception){
                     _searchRecipesMutableLiveData.postValue(NetworkResult.Error(e.localizedMessage))
+                }
+            }
+        }
+    }
+
+
+
+    private val _similarRecipesMutableLiveData = MutableLiveData<NetworkResult<List<SimilarRecipe>>>()
+
+    val similarRecipeLiveData: LiveData<NetworkResult<List<SimilarRecipe>>> get() = _similarRecipesMutableLiveData
+
+    fun getSimilarRecipe(recipeId: Int, query: Map<String, String>) {
+        if (networkManager.internetConnected) {
+            _similarRecipesMutableLiveData.postValue(NetworkResult.Loading())
+            viewModelScope.launch {
+                try {
+                    val response = recipeRepo.getSimilarRecipe(recipeId,query)
+                    if (response.isSuccessful && response.body() != null){
+                        _similarRecipesMutableLiveData.postValue(NetworkResult.Success(response.body()!!))
+                    }else{
+                        _similarRecipesMutableLiveData.postValue(NetworkResult.Error("Something went wrong! Please try again"))
+                    }
+                }catch (e : Exception){
+                    _similarRecipesMutableLiveData.postValue(NetworkResult.Error(e.localizedMessage))
                 }
             }
         }

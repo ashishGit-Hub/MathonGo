@@ -8,7 +8,7 @@
     <string name="gmail_login">Gmail Login</string>
     <string name="home">Home</string>
     <string name="favourite">Favourite</string>
-    <string name="hey_ashish">👋 Hey Ashish</string>
+    <string name="hey">👋 Hey </string>
     <string name="discover_tasty_and_healthy_receipt">Discover tasty and healthy receipt</string>
     <string name="search_any_recipe">Search any recipe</string>
     <string name="popular_recipes">Popular Recipes</string>
@@ -36,5 +36,8 @@
     <string name="hide_ingredient">Hide Ingredient</string>
     <string name="get_similar_recipe">Get similar recipe</string>
     <string name="full_recipe">Full recipe</string>
+    <string name="similar_recipes">Similar recipes</string>
+    <string name="similar_recipes_not_found">Similar Recipes not found</string>
+    <string name="default_web_client_id">1005408726708-ipacg44ssh9qbdipt6udlf5o7pr2asqj.apps.googleusercontent.com</string>
 
 </resources>

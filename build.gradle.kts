@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     // Dagger 3
     id("com.google.dagger.hilt.android") version "2.48" apply false
+    alias(libs.plugins.googleGmsGoogleServices) apply false
 }

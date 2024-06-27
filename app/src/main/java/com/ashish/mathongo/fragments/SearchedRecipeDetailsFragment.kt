@@ -1,6 +1,6 @@
 package com.ashish.mathongo.fragments
 
-import android.app.Dialog
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,13 +16,15 @@ import com.ashish.mathongo.Constants
 import com.ashish.mathongo.Constants.TAG
 import com.ashish.mathongo.R
 import com.ashish.mathongo.adapters.EquipmentRvAdapter
-import com.ashish.mathongo.adapters.IngredientRvAdapter
 import com.ashish.mathongo.adapters.IngredientRvAdapterGrid
+import com.ashish.mathongo.adapters.SimilarRecipeRvAdapter
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.analyzedinstructions.Equipment
 import com.ashish.mathongo.data.viewmodels.RecipeViewModel
 import com.ashish.mathongo.databinding.FragmentSearchedRecipeDetailsBinding
+import com.ashish.mathongo.utils.Extensions.gone
 import com.ashish.mathongo.utils.Extensions.toast
+import com.ashish.mathongo.utils.Extensions.visible
 import com.ashish.mathongo.utils.LoadingDialog
 import com.ashish.mathongo.utils.NetworkResult
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -49,6 +51,7 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
     private lateinit var ingredientsRvAdapter : IngredientRvAdapterGrid
 
     private lateinit var equipmentsRvAdapter: EquipmentRvAdapter
+    private lateinit var similarRecipesRvAdapter : SimilarRecipeRvAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +70,12 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
     ): View {
         _binding = FragmentSearchedRecipeDetailsBinding.inflate(inflater,container,false)
         equipmentsRvAdapter = EquipmentRvAdapter()
+        similarRecipesRvAdapter = SimilarRecipeRvAdapter {  }
+
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -84,6 +90,10 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recipesEquipmentsRv.setHasFixedSize(false)
         binding.recipesEquipmentsRv.adapter = equipmentsRvAdapter
+
+        binding.recipesRv.layoutManager = LinearLayoutManager(requireContext())
+        binding.recipesRv.setHasFixedSize(false)
+        binding.recipesRv.adapter = similarRecipesRvAdapter
 
 
 
@@ -101,25 +111,37 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
         }
 
         binding.getIngredientBtn.setOnClickListener {
-            binding.recipeDetailsLayout.visibility = View.GONE
-            binding.ingredientLayout.visibility = View.VISIBLE
-            binding.ingredientBody.visibility = View.VISIBLE
+            binding.recipeDetailsLayout.gone()
+            binding.ingredientLayout.visible()
+            binding.ingredientBody.visible()
             if (this::recipe.isInitialized){
                 ingredientsRvAdapter.submitList(recipe.extendedIngredients)
             }
 
-            binding.fullRecipeLayout.visibility = View.GONE
+            binding.fullRecipeTopLayout.gone()
+            binding.fullRecipeBody.gone()
+            binding.getSimilarRecipeBtn.gone()
+            binding.similarTopLayout.gone()
+            binding.recipesRv.gone()
         }
 
         binding.ingredientCollapsedImg.setOnClickListener {
-            binding.recipeDetailsLayout.visibility = View.VISIBLE
-            binding.ingredientLayout.visibility = View.GONE
-            binding.fullRecipeLayout.visibility = View.GONE
+            binding.recipeDetailsLayout.visible()
+            binding.ingredientLayout.gone()
+            binding.fullRecipeTopLayout.gone()
+            binding.fullRecipeBody.gone()
+            binding.getSimilarRecipeBtn.gone()
+            binding.similarTopLayout.gone()
+            binding.recipesRv.gone()
+            binding.msgTxt.gone()
         }
 
         binding.getFullRecipeBtn.setOnClickListener {
-            binding.ingredientBody.visibility = View.GONE
-            binding.fullRecipeLayout.visibility = View.VISIBLE
+            binding.ingredientBody.gone()
+
+            binding.fullRecipeTopLayout.visible()
+            binding.fullRecipeBody.visible()
+            binding.getSimilarRecipeBtn.visible()
             val equipment = mutableListOf<Equipment>()
 
             recipe.analyzedInstructions.forEach { instruction ->
@@ -135,12 +157,35 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
         }
 
         binding.fullRecipeCollapsedImg.setOnClickListener {
-            binding.ingredientLayout.visibility = View.VISIBLE
-            binding.ingredientBody.visibility = View.VISIBLE
-            binding.fullRecipeLayout.visibility = View.GONE
+            binding.ingredientLayout.visible()
+            binding.ingredientBody.visible()
+            binding.fullRecipeTopLayout.gone()
+            binding.fullRecipeBody.gone()
+            binding.getSimilarRecipeBtn.gone()
+            binding.similarTopLayout.gone()
+            binding.recipesRv.gone()
+            binding.msgTxt.gone()
         }
 
+        binding.getSimilarRecipeBtn.setOnClickListener {
 
+            viewModel.getSimilarRecipe(args.recipeId,mapOf(
+                "number" to "10",
+                "limitLicense" to "true"
+            ))
+            binding.fullRecipeBody.gone()
+            binding.getSimilarRecipeBtn.gone()
+            binding.similarTopLayout.visible()
+            binding.recipesRv.visible()
+        }
+
+        binding.similarRecipeCollapsedImg.setOnClickListener {
+            binding.fullRecipeBody.visible()
+            binding.getSimilarRecipeBtn.visible()
+            binding.similarTopLayout.gone()
+            binding.recipesRv.gone()
+            binding.msgTxt.gone()
+        }
 
 
         viewModel.recipeInfoLiveData.observe(viewLifecycleOwner) {
@@ -162,6 +207,25 @@ class SearchedRecipeDetailsFragment : BottomSheetDialogFragment() {
                         recipe.pricePerServing.let {
                             binding.pricePerServingTxt.text = "${recipe.pricePerServing}"
                         }
+                    }
+                }
+            }
+        }
+        
+        viewModel.similarRecipeLiveData.observe(viewLifecycleOwner){
+            loadingDialog.dismiss()
+            when(it){
+                is NetworkResult.Error -> {
+                    toast(it.message)
+                    binding.msgTxt.visible()
+                }
+                is NetworkResult.Loading -> loadingDialog.startLoading()
+                is NetworkResult.Success ->{
+                    similarRecipesRvAdapter.submitList(it.data)
+                    if(it.data?.size==0){
+                        binding.msgTxt.visible()
+                    }else{
+                        binding.msgTxt.gone()
                     }
                 }
             }

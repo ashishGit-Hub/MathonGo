@@ -4,6 +4,7 @@ import com.ashish.mathongo.data.api.RecipesAPI
 import com.ashish.mathongo.data.models.Recipe
 import com.ashish.mathongo.data.models.RecipeApiResp
 import com.ashish.mathongo.data.models.SearchResp
+import com.ashish.mathongo.data.models.SimilarRecipe
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -23,5 +24,8 @@ class RecipeRepo @Inject constructor(
         return recipesAPI.searchRecipes(query)
     }
 
+    suspend fun getSimilarRecipe(recipeId: Int,query: Map<String,String>): Response<List<SimilarRecipe>> {
+        return recipesAPI.getSimilarRecipe(recipeId,query)
+    }
 
 }
